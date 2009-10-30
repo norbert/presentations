@@ -1,0 +1,105 @@
+body {
+  color: #ffffff;
+  background-color: #000000;
+  font-family: Lucida Grande, sans-serif;
+  font-size: 1em;
+  line-height: 1em;
+}
+
+code {
+  font-family: Monaco;
+}
+
+a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+#header, #footer, .slide {
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 1.5em;
+}
+#footer {
+  top: auto;
+  bottom: 0;
+  z-index: 5;
+}
+.slide {
+  height: 100%;
+  padding: 1.5em 0;
+}
+
+#currentSlide {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding: 1.5em;
+  z-index: 10;
+}
+
+#controls {
+  display: none;
+}
+
+.slide h1, .slide h2, .slide h3 {
+  width: 100%;
+  text-align: center;
+}
+.slide h1 {
+  font-size: 3.5em;
+  line-height: 1em;
+}
+.slide h2 {
+  font-size: 2em;
+  line-height: 1em;
+}
+.slide h3 {
+  /*
+  font-size: 1.5em
+  line-height: 1em;
+  */
+}
+
+#slide0 h1 {
+  font-size: 3em;
+  line-height: 1em;
+}
+#slide0 h2 {
+  font-size: 1.5em;
+  line-height: 1em;
+  margin-top: 1em;
+}
+
+.caption.slide > * {
+  position: absolute;
+  top: 33%;
+  margin-top: -0.5em;
+}
+
+.example.slide pre {
+  font-size: 50%;
+  line-height: 1.2em;
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 1.2em;
+  border-top: 1px solid #ffffff;
+}
+.dual.example.slide pre {
+  width: 30%;
+  float: left;
+}
+.dual.example.slide pre:last-child {
+  margin-left: 0;
+}
+
+code em {
+  color: #ffff00;
+}
+code span.constant {
+  color: #00ff00;
+}
+code span.comment {
+  color: #00ffff;
+}
