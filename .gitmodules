@@ -1,0 +1,4 @@
+[submodule "rubyenrails2009"]
+	path = rubyenrails2009
+	url = https://github.com/norbert/presentations
+	branch = rubyenrails2009
