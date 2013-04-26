@@ -43,6 +43,7 @@ Usage:
 
 Options:
   -c, --compress        : compress output files using bzip
+  -r, --rate=n          : global sample rate (between 0 and 1)
   -b, --bytes= n[KM]    : put specified bytes per output file (default 500K)
   -B, --base= URL       : base URL for the Wikipedia pages
   -l, --link            : preserve links
@@ -58,6 +59,7 @@ import gc
 import getopt
 import urllib
 import re
+import random
 import bz2
 import os.path
 from htmlentitydefs import name2codepoint
@@ -94,6 +96,12 @@ discardElements = set([
         'ref', 'references', 'img', 'imagemap', 'source'
         ])
 
+##
+# Global sample rate
+#
+sampleRate = 1
+random.seed(10000)
+
 #=========================================================================
 #
 # MediaWiki Markup Grammar
@@ -116,17 +124,15 @@ version = '2.3'
 
 def WikiDocument(out, id, title, text):
     url = get_url(id, prefix)
-    header = '<doc id="%s" url="%s" title="%s">\n' % (id, url, title)
-    # Separate header from text with a newline.
-    header += title + '\n'
+    header = '%s\t' % title
     header = header.encode('utf-8')
     text = clean(text)
-    footer = "\n</doc>"
-    out.reserve(len(header) + len(text) + len(footer))
-    print >> out, header
-    for line in compact(text):
-        print >> out, line.encode('utf-8')
-    print >> out, footer
+    footer = "\n"
+    cell = "\\n".join(line.encode('utf-8') for line in compact(text))
+    out.reserve(len(header) + len(cell) + len(footer))
+    out.write(header)
+    out.write(cell)
+    out.write(footer)
 
 def get_url(id, prefix):
     return "%s?curid=%s" % (prefix, id)
@@ -588,9 +594,10 @@ def process_data(input, output):
             colon = title.find(':')
             if (colon < 0 or title[:colon] in acceptedNamespaces) and \
                     not redirect:
-                print id, title.encode('utf-8')
-                sys.stdout.flush()
-                WikiDocument(output, id, title, ''.join(page))
+                if random.random() < sampleRate:
+                    print id, title.encode('utf-8')
+                    sys.stdout.flush()
+                    WikiDocument(output, id, title, ''.join(page))
             id = None
             page = []
         elif tag == 'base':
@@ -612,12 +619,12 @@ def show_usage(script_name):
 minFileSize = 200 * 1024
 
 def main():
-    global keepLinks, keepSections, prefix, acceptedNamespaces
+    global keepLinks, keepSections, prefix, acceptedNamespaces, sampleRate
     script_name = os.path.basename(sys.argv[0])
 
     try:
-        long_opts = ['help', 'compress', 'bytes=', 'basename=', 'links', 'ns=', 'sections', 'output=', 'version']
-        opts, args = getopt.gnu_getopt(sys.argv[1:], 'cb:hln:o:B:sv', long_opts)
+        long_opts = ['help', 'compress', 'rate=' 'bytes=', 'basename=', 'links', 'ns=', 'sections', 'output=', 'version']
+        opts, args = getopt.gnu_getopt(sys.argv[1:], 'cr:b:hln:o:B:sv', long_opts)
     except getopt.GetoptError:
         show_usage(script_name)
         sys.exit(1)
@@ -638,6 +645,13 @@ def main():
             keepSections = True
         elif opt in ('-B', '--base'):
             prefix = arg
+        elif opt in ('-r', '--rate'):
+            try:
+                sampleRate = float(arg)
+            except ValueError:
+                print >> sys.stderr, \
+                '%s: %s: Invalid sample rate' % (script_name, arg)
+                sys.exit(2)
         elif opt in ('-b', '--bytes'):
             try:
                 if arg[-1] in 'kK':
