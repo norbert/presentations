@@ -2,3 +2,7 @@
 	path = rubyenrails2009
 	url = https://github.com/norbert/presentations
 	branch = rubyenrails2009
+[submodule "pem-20130426"]
+	path = pem-20130426
+	url = https://github.com/norbert/presentations
+	branch = pem-20130426
