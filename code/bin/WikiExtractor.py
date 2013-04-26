@@ -128,7 +128,7 @@ def WikiDocument(out, id, title, text):
     header = header.encode('utf-8')
     text = clean(text)
     footer = "\n"
-    cell = "\\n".join(line.encode('utf-8') for line in compact(text))
+    cell = " ".join(line.encode('utf-8') for line in compact(text))
     out.reserve(len(header) + len(cell) + len(footer))
     out.write(header)
     out.write(cell)
