@@ -22,6 +22,7 @@ a {
   padding: 1.5em;
 }
 #footer {
+  font-size: 50%;
   top: auto;
   bottom: 0;
   z-index: 5;
